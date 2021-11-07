@@ -4,10 +4,10 @@ import { APP_FILTER } from '@nestjs/core';
 import * as Joi from 'joi';
 import { AuthenticationModule } from 'src/authentication/authentication.module';
 import { ExceptionsLoggerFilter } from 'src/exceptionsLogger.filter';
+import { CategoryModule } from './category/category.module';
 import { DatabaseModule } from './database/database.module';
 import { PostModule } from './post/post.module';
 import { UserModule } from './user/user.module';
-import { CategoryModule } from './category/category.module';
 
 @Module({
   imports: [

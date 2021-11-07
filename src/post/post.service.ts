@@ -1,11 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { PostSearchService } from 'src/post/post-search.service';
+import { In, Repository } from 'typeorm';
 import User from '../user/entities/user.entity';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import Post from './entities/post.entity';
-import { IPost } from './post.interface';
+import { IPost } from './type/post.interface';
 
 @Injectable()
 export class PostService {
@@ -14,6 +15,7 @@ export class PostService {
 
   constructor(
     @InjectRepository(Post) private postRepository: Repository<Post>,
+    private postSearchService: PostSearchService,
   ) {}
 
   findAll() {
@@ -28,9 +30,19 @@ export class PostService {
     throw new NotFoundException('Post not found');
   }
 
+  async searchForPosts(text: string) {
+    const results = await this.postSearchService.search(text);
+    const ids = results.map((result) => result.id);
+    if (!ids.length) {
+      return [];
+    }
+    return this.postRepository.find({ where: { id: In(ids) } });
+  }
+
   async create(post: CreatePostDto, user: User) {
     const newPost = await this.postRepository.create({ ...post, author: user });
     await this.postRepository.save(newPost);
+    this.postSearchService.indexPost(newPost);
     return newPost;
   }
 
@@ -38,6 +50,7 @@ export class PostService {
     await this.postRepository.update(id, updatePostDto);
     const updatedPost = await this.findOne(id);
     if (updatedPost) {
+      await this.postSearchService.update(updatedPost);
       return updatedPost;
     }
     throw new NotFoundException('Post not found');
@@ -48,5 +61,6 @@ export class PostService {
     if (!deleteResponse.affected) {
       throw new NotFoundException();
     }
+    await this.postSearchService.remove(id);
   }
 }

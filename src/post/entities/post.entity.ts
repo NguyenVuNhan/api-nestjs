@@ -20,16 +20,6 @@ export class Post {
   @Column()
   public content: string;
 
-  @Column({ nullable: true })
-  // Example of transform value if null
-  // @Transform(({ value }) => {
-  //   if (value !== null) {
-  //     return value;
-  //   }
-  //   return undefined;
-  // })
-  public category?: string;
-
   @ManyToOne(() => User, (author: User) => author.posts)
   public author: User;
 

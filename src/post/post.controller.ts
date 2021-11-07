@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -27,7 +28,10 @@ export class PostController {
   }
 
   @Get()
-  findAll() {
+  findAll(@Query('search') search: string) {
+    if (search) {
+      return this.postService.searchForPosts(search);
+    }
     return this.postService.findAll();
   }
 
