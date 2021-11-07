@@ -9,7 +9,7 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import JwtAuthenticationGuard from 'src/authentication/jwtAuthentication.guard';
+import JwtAuthenticationGuard from 'src/authentication/guard/jwtAuthentication.guard';
 import { CategoryService } from 'src/category/category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';

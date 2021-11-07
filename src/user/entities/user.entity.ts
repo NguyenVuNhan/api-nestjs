@@ -35,6 +35,10 @@ export class User {
 
   @OneToMany(() => Post, (post: Post) => post.author)
   public posts?: Post[];
+
+  @Column({ nullable: true })
+  @Exclude()
+  public currentHashedRefreshToken?: string;
 }
 
 export default User;

@@ -12,7 +12,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { RequestWithUser } from 'src/authentication/authentication.interface';
-import JwtAuthenticationGuard from 'src/authentication/jwtAuthentication.guard';
+import JwtAuthenticationGuard from 'src/authentication/guard/jwtAuthentication.guard';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PostService } from './post.service';

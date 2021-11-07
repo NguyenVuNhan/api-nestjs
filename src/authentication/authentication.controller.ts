@@ -8,19 +8,23 @@ import {
   SerializeOptions,
   UseGuards,
 } from '@nestjs/common';
-import { Request } from 'express';
-import JwtAuthenticationGuard from 'src/authentication/jwtAuthentication.guard';
+import JwtRefreshGuard from 'src/authentication/guard/jwt-refresh.guard';
+import JwtAuthenticationGuard from 'src/authentication/guard/jwtAuthentication.guard';
+import { UserService } from 'src/user/user.service';
 import { RequestWithUser } from './authentication.interface';
 import { AuthenticationService } from './authentication.service';
 import { RegisterDto } from './dto/register.dto';
-import { LocalAuthenticationGuard } from './localAuthentication.guard';
+import { LocalAuthenticationGuard } from './guard/localAuthentication.guard';
 
 @Controller('authentication')
 @SerializeOptions({
   strategy: 'exposeAll',
 })
 export class AuthenticationController {
-  constructor(private readonly authenticationService: AuthenticationService) {}
+  constructor(
+    private readonly authenticationService: AuthenticationService,
+    private readonly userService: UserService,
+  ) {}
 
   @Post('register')
   async register(@Body() registrationData: RegisterDto) {
@@ -32,14 +36,24 @@ export class AuthenticationController {
   @Post('log-in')
   async logIn(@Req() request: RequestWithUser) {
     const { user } = request;
-    const cookie = this.authenticationService.getCookieWithJwtToken(user.id);
-    request.res.setHeader('Set-Cookie', cookie);
+    const accessTokenCookie =
+      this.authenticationService.getCookieWithJwtAccessToken(user.id);
+    const { cookie: refreshTokenCookie, token: refreshToken } =
+      this.authenticationService.getCookieWithJwtRefreshToken(user.id);
+
+    await this.userService.setCurrentRefreshToken(refreshToken, user.id);
+
+    request.res.setHeader('Set-Cookie', [
+      accessTokenCookie,
+      refreshTokenCookie,
+    ]);
     return user;
   }
 
   @UseGuards(JwtAuthenticationGuard)
   @Get('log-out')
-  async logOut(@Req() request: Request) {
+  async logOut(@Req() request: RequestWithUser) {
+    await this.userService.removeRefreshToken(request.user.id);
     request.res.setHeader(
       'Set-Cookie',
       this.authenticationService.getCookieForLogOut(),
@@ -51,5 +65,15 @@ export class AuthenticationController {
   authenticate(@Req() request: RequestWithUser) {
     const { user } = request;
     return user;
+  }
+
+  @UseGuards(JwtRefreshGuard)
+  @Get('refresh')
+  refresh(@Req() request: RequestWithUser) {
+    const accessTokenCookie =
+      this.authenticationService.getCookieWithJwtAccessToken(request.user.id);
+
+    request.res.setHeader('Set-Cookie', accessTokenCookie);
+    return request.user;
   }
 }
