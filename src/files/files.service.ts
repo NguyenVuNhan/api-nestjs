@@ -5,7 +5,7 @@ import * as toStream from 'buffer-to-stream';
 import { v2 } from 'cloudinary';
 import PrivateFile from 'src/files/entities/privateFile.entity';
 import PublicFile from 'src/files/entities/publicFile.entity';
-import { Repository } from 'typeorm';
+import { QueryRunner, Repository } from 'typeorm';
 
 @Injectable()
 export class FilesService {
@@ -48,10 +48,10 @@ export class FilesService {
     return this.publicFilesRepository.save({ fileName });
   }
 
-  async deletePublicFile(fileId: number) {
-    const file = await this.publicFilesRepository.findOne({ id: fileId });
+  async deletePublicFile(fileId: number, queryRunner: QueryRunner) {
+    const file = await queryRunner.manager.findOne(PublicFile, { id: fileId });
     await this.deleteImage(file.fileName);
-    return this.publicFilesRepository.delete(fileId);
+    return queryRunner.manager.delete(PublicFile, fileId);
   }
 
   private async deleteImage(fileName: string): Promise<void> {
