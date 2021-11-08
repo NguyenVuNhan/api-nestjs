@@ -13,6 +13,7 @@ import {
 } from '@nestjs/common';
 import { RequestWithUser } from 'src/authentication/authentication.interface';
 import JwtAuthenticationGuard from 'src/authentication/guard/jwtAuthentication.guard';
+import PaginationParams from 'src/utils/dto/paginationParams.dto';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PostService } from './post.service';
@@ -28,11 +29,14 @@ export class PostController {
   }
 
   @Get()
-  findAll(@Query('search') search: string) {
+  findAll(
+    @Query('search') search: string,
+    @Query() { limit, offset, startId }: PaginationParams,
+  ) {
     if (search) {
-      return this.postService.searchForPosts(search);
+      return this.postService.searchForPosts(search, offset, limit);
     }
-    return this.postService.findAll();
+    return this.postService.findAll(offset, limit, startId);
   }
 
   @Get(':id')
