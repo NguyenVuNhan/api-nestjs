@@ -30,6 +30,14 @@ export class PostService {
     throw new NotFoundException('Post not found');
   }
 
+  async getPostsWithParagraph(paragraph: string) {
+    // Pass argument to prevent SQL injection
+    return this.postRepository.query(
+      `SELECT * from post WHERE $1 = ANY(paragraphs)`,
+      [paragraph],
+    );
+  }
+
   async searchForPosts(text: string) {
     const results = await this.postSearchService.search(text);
     const ids = results.map((result) => result.id);
