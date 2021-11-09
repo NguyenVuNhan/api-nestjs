@@ -44,6 +44,11 @@ import { SubscribersModule } from './subscribers/subscribers.module';
         // Subscriber Service
         SUBSCRIBERS_SERVICE_HOST: Joi.string().required(),
         SUBSCRIBERS_SERVICE_PORT: Joi.string().required(),
+        // Message queue
+        RABBITMQ_USER: Joi.string().required(),
+        RABBITMQ_PASSWORD: Joi.string().required(),
+        RABBITMQ_HOST: Joi.string().required(),
+        RABBITMQ_QUEUE_NAME: Joi.string().required(),
       }),
     }),
     DatabaseModule,
