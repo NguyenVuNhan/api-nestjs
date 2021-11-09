@@ -9,11 +9,13 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
 import { ExcludeNullInterceptor } from 'src/utils/interceptor/exclideNull.interceptor';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: ['debug', 'warn', 'error', 'log', 'verbose'],
   });
+  const configService = app.get(ConfigService);
   app.setGlobalPrefix('api');
 
   // ======================================================================
@@ -61,7 +63,7 @@ async function bootstrap() {
   // ======================================================================
   app.use(cookieParser());
 
-  await app.listen(3000);
+  await app.listen(configService.get('PORT'));
 }
 
 bootstrap();
