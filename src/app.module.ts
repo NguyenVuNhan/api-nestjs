@@ -8,6 +8,7 @@ import { CategoryModule } from './category/category.module';
 import { DatabaseModule } from './database/database.module';
 import { PostModule } from './post/post.module';
 import { UserModule } from './user/user.module';
+import { SubscribersModule } from './subscribers/subscribers.module';
 
 @Module({
   imports: [
@@ -40,6 +41,9 @@ import { UserModule } from './user/user.module';
         CLOUDINARY_API_KEY: Joi.string().required(),
         CLOUDINARY_API_SECRET: Joi.string().required(),
         CLOUDINARY_URL: Joi.string().required(),
+        // Subscriber Service
+        SUBSCRIBERS_SERVICE_HOST: Joi.string().required(),
+        SUBSCRIBERS_SERVICE_PORT: Joi.string().required(),
       }),
     }),
     DatabaseModule,
@@ -47,6 +51,7 @@ import { UserModule } from './user/user.module';
     UserModule,
     AuthenticationModule,
     CategoryModule,
+    SubscribersModule,
   ],
   controllers: [],
   providers: [
