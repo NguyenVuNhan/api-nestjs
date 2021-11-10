@@ -49,6 +49,8 @@ import { SubscribersModule } from './subscribers/subscribers.module';
         RABBITMQ_PASSWORD: Joi.string().required(),
         RABBITMQ_HOST: Joi.string().required(),
         RABBITMQ_QUEUE_NAME: Joi.string().required(),
+        // GRPC
+        GRPC_CONNECTION_URL: Joi.string().required(),
       }),
     }),
     DatabaseModule,
