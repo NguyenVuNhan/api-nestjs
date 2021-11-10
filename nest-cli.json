@@ -1,7 +1,60 @@
 {
-    "collection": "@nestjs/schematics",
-    "sourceRoot": "src",
-    "compilerOptions": {
-        "plugins": ["@nestjs/swagger"]
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "apps/api/src",
+  "compilerOptions": {
+    "plugins": [
+      "@nestjs/swagger"
+    ],
+    "webpack": false,
+    "tsConfigPath": "apps/api/tsconfig.app.json"
+  },
+  "monorepo": true,
+  "root": "apps/api",
+  "projects": {
+    "api": {
+      "type": "application",
+      "root": "apps/api",
+      "entryFile": "main",
+      "sourceRoot": "apps/api/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/api/tsconfig.app.json"
+      }
+    },
+    "email-subscribers-amqp": {
+      "type": "application",
+      "root": "apps/email-subscribers-amqp",
+      "entryFile": "main",
+      "sourceRoot": "apps/email-subscribers-amqp/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/email-subscribers-amqp/tsconfig.app.json"
+      }
+    },
+    "email-subscribers-grpc": {
+      "type": "application",
+      "root": "apps/email-subscribers-grpc",
+      "entryFile": "main",
+      "sourceRoot": "apps/email-subscribers-grpc/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/email-subscribers-grpc/tsconfig.app.json"
+      }
+    },
+    "database": {
+      "type": "library",
+      "root": "libs/database",
+      "entryFile": "index",
+      "sourceRoot": "libs/database/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/database/tsconfig.lib.json"
+      }
+    },
+    "common": {
+      "type": "library",
+      "root": "libs/common",
+      "entryFile": "index",
+      "sourceRoot": "libs/common/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/common/tsconfig.lib.json"
+      }
     }
+  }
 }
