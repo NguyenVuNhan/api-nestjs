@@ -1,5 +1,3 @@
-import Category from '../../category/entities/category.entity';
-import User from '../../user/entities/user.entity';
 import {
   Column,
   Entity,
@@ -7,8 +5,12 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import Category from '../../category/entities/category.entity';
+import Comment from '../../comment/entities/comment.entity';
+import User from '../../user/entities/user.entity';
 
 @Entity()
 export class Post {
@@ -31,6 +33,9 @@ export class Post {
 
   @Column('text', { array: true })
   public paragraphs: string[];
+
+  @OneToMany(() => Comment, (comment: Comment) => comment.post)
+  public comments: Comment[];
 }
 
 export default Post;

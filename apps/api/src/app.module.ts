@@ -9,6 +9,7 @@ import { ExceptionsLoggerFilter } from './exceptionsLogger.filter';
 import { PostModule } from './post/post.module';
 import { SubscribersModule } from './subscribers/subscribers.module';
 import { UserModule } from './user/user.module';
+import { CommentModule } from './comment/comment.module';
 
 @Module({
   imports: [
@@ -59,6 +60,7 @@ import { UserModule } from './user/user.module';
     AuthenticationModule,
     CategoryModule,
     SubscribersModule,
+    CommentModule,
   ],
   controllers: [],
   providers: [
