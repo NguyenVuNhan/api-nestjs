@@ -5,11 +5,13 @@ import { APP_FILTER } from '@nestjs/core';
 import * as Joi from 'joi';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { CategoryModule } from './category/category.module';
+import { CommentModule } from './comment/comment.module';
 import { ExceptionsLoggerFilter } from './exceptionsLogger.filter';
 import { PostModule } from './post/post.module';
 import { SubscribersModule } from './subscribers/subscribers.module';
 import { UserModule } from './user/user.module';
-import { CommentModule } from './comment/comment.module';
+import { ProductsModule } from './products/products.module';
+import { ProductCategoriesModule } from './product-categories/product-categories.module';
 
 @Module({
   imports: [
@@ -61,6 +63,8 @@ import { CommentModule } from './comment/comment.module';
     CategoryModule,
     SubscribersModule,
     CommentModule,
+    ProductsModule,
+    ProductCategoriesModule,
   ],
   controllers: [],
   providers: [
