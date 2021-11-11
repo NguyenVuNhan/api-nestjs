@@ -2,19 +2,23 @@ import { DatabaseModule } from '@app/database';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER } from '@nestjs/core';
+import { ScheduleModule } from '@nestjs/schedule';
 import * as Joi from 'joi';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { CategoryModule } from './category/category.module';
 import { CommentModule } from './comment/comment.module';
+import { EmailSchedulingModule } from './email-scheduling/email-scheduling.module';
+import { EmailModule } from './email/email.module';
 import { ExceptionsLoggerFilter } from './exceptionsLogger.filter';
 import { PostModule } from './post/post.module';
+import { ProductCategoriesModule } from './product-categories/product-categories.module';
+import { ProductsModule } from './products/products.module';
 import { SubscribersModule } from './subscribers/subscribers.module';
 import { UserModule } from './user/user.module';
-import { ProductsModule } from './products/products.module';
-import { ProductCategoriesModule } from './product-categories/product-categories.module';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     ConfigModule.forRoot({
       validationSchema: Joi.object({
         // App config
@@ -57,6 +61,10 @@ import { ProductCategoriesModule } from './product-categories/product-categories
         // Redis
         REDIS_HOST: Joi.string().required(),
         REDIS_PORT: Joi.number().required(),
+        // Email
+        EMAIL_SERVICE: Joi.string().required(),
+        EMAIL_USER: Joi.string().required(),
+        EMAIL_PASSWORD: Joi.string().required(),
       }),
     }),
     DatabaseModule,
@@ -68,6 +76,8 @@ import { ProductCategoriesModule } from './product-categories/product-categories
     CommentModule,
     ProductsModule,
     ProductCategoriesModule,
+    EmailModule,
+    EmailSchedulingModule,
   ],
   controllers: [],
   providers: [
