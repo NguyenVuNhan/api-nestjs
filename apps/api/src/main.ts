@@ -10,6 +10,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 import { runInCluster } from './runInCluster';
+import { RedisIoAdapter } from './utils/adapter/redis-io.adapter';
 import { ExcludeNullInterceptor } from './utils/interceptor/exclideNull.interceptor';
 
 async function bootstrap() {
@@ -18,6 +19,7 @@ async function bootstrap() {
   });
   const configService = app.get(ConfigService);
   app.setGlobalPrefix('api');
+  app.useWebSocketAdapter(new RedisIoAdapter(app));
 
   // ======================================================================
   // User input validation

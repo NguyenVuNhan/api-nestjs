@@ -15,6 +15,7 @@ import { ProductCategoriesModule } from './product-categories/product-categories
 import { ProductsModule } from './products/products.module';
 import { SubscribersModule } from './subscribers/subscribers.module';
 import { UserModule } from './user/user.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -78,6 +79,7 @@ import { UserModule } from './user/user.module';
     ProductCategoriesModule,
     EmailModule,
     EmailSchedulingModule,
+    ChatModule,
   ],
   controllers: [],
   providers: [
