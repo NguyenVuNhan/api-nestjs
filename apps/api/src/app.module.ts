@@ -43,7 +43,7 @@ import { ProductCategoriesModule } from './product-categories/product-categories
         CLOUDINARY_CLOUD_NAME: Joi.string().required(),
         CLOUDINARY_API_KEY: Joi.string().required(),
         CLOUDINARY_API_SECRET: Joi.string().required(),
-        CLOUDINARY_URL: Joi.string().required(),
+        CLOUDINARY_BASE_URL: Joi.string().required(),
         // Subscriber Service
         SUBSCRIBERS_SERVICE_HOST: Joi.string().required(),
         SUBSCRIBERS_SERVICE_PORT: Joi.string().required(),
@@ -54,6 +54,9 @@ import { ProductCategoriesModule } from './product-categories/product-categories
         RABBITMQ_QUEUE_NAME: Joi.string().required(),
         // GRPC
         GRPC_CONNECTION_URL: Joi.string().required(),
+        // Redis
+        REDIS_HOST: Joi.string().required(),
+        REDIS_PORT: Joi.number().required(),
       }),
     }),
     DatabaseModule,

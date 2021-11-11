@@ -18,13 +18,12 @@ export class FilesService {
     private privateFilesRepository: Repository<PrivateFile>,
     private readonly configService: ConfigService,
   ) {
+    this.baseUrl = this.configService.get('CLOUDINARY_BASE_URL');
     v2.config({
       cloud_name: this.configService.get('CLOUDINARY_CLOUD_NAME'),
       api_key: this.configService.get('CLOUDINARY_API_KEY'),
       api_secret: this.configService.get('CLOUDINARY_API_SECRET'),
     });
-
-    this.baseUrl = this.configService.get('CLOUDINARY_URL');
   }
 
   async uploadPrivateFile(data: Express.Multer.File, ownerId: number) {

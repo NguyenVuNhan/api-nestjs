@@ -4,12 +4,13 @@ import {
   HttpStatus,
   ValidationPipe,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
+import { AppModule } from './app.module';
+import { runInCluster } from './runInCluster';
 import { ExcludeNullInterceptor } from './utils/interceptor/exclideNull.interceptor';
-import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -66,4 +67,4 @@ async function bootstrap() {
   await app.listen(configService.get('PORT'));
 }
 
-bootstrap();
+runInCluster(bootstrap);
