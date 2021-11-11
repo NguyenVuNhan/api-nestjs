@@ -1,7 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  CACHE_MANAGER,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { PostSearchService } from '../post/post-search.service';
+import { GET_POSTS_CACHE_KEY } from 'apps/api/src/post/post.constant';
+import { Cache } from 'cache-manager';
 import { FindManyOptions, In, MoreThan, Repository } from 'typeorm';
+import { PostSearchService } from '../post/post-search.service';
 import User from '../user/entities/user.entity';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
@@ -16,7 +23,17 @@ export class PostService {
   constructor(
     @InjectRepository(Post) private postRepository: Repository<Post>,
     private postSearchService: PostSearchService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
+
+  async clearCache() {
+    const keys: string[] = await this.cacheManager.store.keys();
+    keys.forEach((key) => {
+      if (key.startsWith(GET_POSTS_CACHE_KEY)) {
+        this.cacheManager.del(key);
+      }
+    });
+  }
 
   async findAll(offset?: number, limit?: number, startId?: number) {
     const where: FindManyOptions<Post>['where'] = {};
@@ -75,6 +92,7 @@ export class PostService {
     const newPost = await this.postRepository.create({ ...post, author: user });
     await this.postRepository.save(newPost);
     this.postSearchService.indexPost(newPost);
+    await this.clearCache();
     return newPost;
   }
 
@@ -83,6 +101,7 @@ export class PostService {
     const updatedPost = await this.findOne(id);
     if (updatedPost) {
       await this.postSearchService.update(updatedPost);
+      await this.clearCache();
       return updatedPost;
     }
     throw new NotFoundException('Post not found');
@@ -94,5 +113,6 @@ export class PostService {
       throw new NotFoundException();
     }
     await this.postSearchService.remove(id);
+    await this.clearCache();
   }
 }
