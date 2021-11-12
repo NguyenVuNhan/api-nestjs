@@ -69,4 +69,5 @@ async function bootstrap() {
   await app.listen(configService.get('PORT'));
 }
 
-runInCluster(bootstrap);
+// runInCluster(bootstrap);
+bootstrap();

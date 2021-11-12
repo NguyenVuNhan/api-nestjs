@@ -1,11 +1,14 @@
 import { DatabaseModule } from '@app/database';
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER } from '@nestjs/core';
+import { GraphQLModule } from '@nestjs/graphql';
 import { ScheduleModule } from '@nestjs/schedule';
 import * as Joi from 'joi';
+import { join } from 'path';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { CategoryModule } from './category/category.module';
+import { ChatModule } from './chat/chat.module';
 import { CommentModule } from './comment/comment.module';
 import { EmailSchedulingModule } from './email-scheduling/email-scheduling.module';
 import { EmailModule } from './email/email.module';
@@ -15,11 +18,18 @@ import { ProductCategoriesModule } from './product-categories/product-categories
 import { ProductsModule } from './products/products.module';
 import { SubscribersModule } from './subscribers/subscribers.module';
 import { UserModule } from './user/user.module';
-import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
     ScheduleModule.forRoot(),
+    GraphQLModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        playground: Boolean(configService.get('GRAPHQL_PLAYGROUND')),
+        autoSchemaFile: join(process.cwd(), 'apps/common/schema.gql'),
+      }),
+    }),
     ConfigModule.forRoot({
       validationSchema: Joi.object({
         // App config
@@ -27,6 +37,7 @@ import { ChatModule } from './chat/chat.module';
         NODE_ENV: Joi.string()
           .valid('development', 'production', 'test')
           .default('development'),
+        GRAPHQL_PLAYGROUND: Joi.number(),
         // JWT
         JWT_SECRET: Joi.string().required(),
         JWT_EXPIRATION_TIME: Joi.string().required(),

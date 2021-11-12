@@ -7,6 +7,7 @@ import Post from './entities/post.entity';
 import { PostSearchService } from './post-search.service';
 import { PostController } from './post.controller';
 import { PostService } from './post.service';
+import { PostResolver } from './post.resolver';
 
 @Module({
   imports: [
@@ -30,6 +31,6 @@ import { PostService } from './post.service';
     SearchModule,
   ],
   controllers: [PostController],
-  providers: [PostService, PostSearchService],
+  providers: [PostService, PostSearchService, PostResolver],
 })
 export class PostModule {}
