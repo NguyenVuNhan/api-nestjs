@@ -1,4 +1,4 @@
-import { UseGuards } from '@nestjs/common';
+import { Inject, UseGuards } from '@nestjs/common';
 import {
   Args,
   Context,
@@ -6,6 +6,7 @@ import {
   Mutation,
   Query,
   Resolver,
+  Subscription,
 } from '@nestjs/graphql';
 import { GraphQLResolveInfo } from 'graphql';
 import {
@@ -13,15 +14,22 @@ import {
   ResolveTree,
   simplifyParsedResolveInfoFragmentWithType,
 } from 'graphql-parse-resolve-info';
+import { RedisPubSub } from 'graphql-redis-subscriptions';
 import { RequestWithUser } from '../authentication/authentication.interface';
 import { GraphqlJwtAuthGuard } from '../authentication/guard/graphql-jwt-auth.guard';
+import { PUB_SUB } from '../pub-sub/pub-sub.module';
 import { CreatePostInput } from './inputs/post.input';
 import Post from './models/post.model';
 import { PostService } from './post.service';
 
+const POST_ADDED_EVENT = 'postAdded';
+
 @Resolver(() => Post)
 export class PostResolver {
-  constructor(private readonly postService: PostService) {}
+  constructor(
+    private readonly postService: PostService,
+    @Inject(PUB_SUB) private readonly pubSub: RedisPubSub,
+  ) {}
 
   @Query(() => [Post])
   async posts(@Info() info: GraphQLResolveInfo) {
@@ -54,6 +62,37 @@ export class PostResolver {
     @Args('input') createPostInput: CreatePostInput,
     @Context() context: { req: RequestWithUser },
   ) {
-    return this.postService.create(createPostInput, context.req.user);
+    const newPost = this.postService.create(createPostInput, context.req.user);
+    this.pubSub.publish(POST_ADDED_EVENT, { postAdded: newPost });
+    return newPost;
+  }
+
+  @Subscription(() => Post, {
+    // Custom filter. If false, the event is filtered out and not returned to the clients
+    // filter: (payload, variables) => {
+    //   return payload.postAdded.title === 'Hello world!';
+    // },
+    // Resolver help to modify the response
+    // resolve: (value) => {
+    //   return {
+    //     ...value.postAdded,
+    //     title: `Title: ${value.postAdded.title}`,
+    //   };
+    // },
+    // Inject the service to `resolver` and `filter`
+    // filter: function (this: PostsResolver, payload, variables) {
+    //   const postsService = this.postsService;
+    //   return true;
+    // },
+    // resolve: function (this: PostsResolver, value) {
+    //   const postsService = this.postsService;
+    //   return {
+    //     ...value.postAdded,
+    //     title: `Title: ${value.postAdded.title}`,
+    //   };
+    // },
+  })
+  postAdded() {
+    return this.pubSub.asyncIterator(POST_ADDED_EVENT);
   }
 }

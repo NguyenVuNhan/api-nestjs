@@ -2,6 +2,7 @@ import { CacheModule, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as redisStore from 'cache-manager-redis-store';
+import { PubSubModule } from '../pub-sub/pub-sub.module';
 import { SearchModule } from '../search/search.module';
 import { UserModule } from '../user/user.module';
 import Post from './entities/post.entity';
@@ -31,6 +32,7 @@ import { PostService } from './post.service';
     TypeOrmModule.forFeature([Post]),
     SearchModule,
     UserModule,
+    PubSubModule,
   ],
   controllers: [PostController],
   providers: [PostService, PostSearchService, PostResolver],

@@ -46,8 +46,8 @@ async function bootstrap() {
   // ======================================================================
   // Interceptor
   // ======================================================================
-  app.useGlobalInterceptors(new ExcludeNullInterceptor());
-  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+  // app.useGlobalInterceptors(new ExcludeNullInterceptor());
+  // app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
   // ======================================================================
   // Swagger

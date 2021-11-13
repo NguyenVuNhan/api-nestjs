@@ -18,6 +18,7 @@ import { ProductCategoriesModule } from './product-categories/product-categories
 import { ProductsModule } from './products/products.module';
 import { SubscribersModule } from './subscribers/subscribers.module';
 import { UserModule } from './user/user.module';
+import { PubSubModule } from './pub-sub/pub-sub.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { UserModule } from './user/user.module';
       useFactory: (configService: ConfigService) => ({
         playground: Boolean(configService.get('GRAPHQL_PLAYGROUND')),
         autoSchemaFile: join(process.cwd(), 'apps/common/schema.gql'),
+        installSubscriptionHandlers: true,
       }),
     }),
     ConfigModule.forRoot({
@@ -91,6 +93,7 @@ import { UserModule } from './user/user.module';
     EmailModule,
     EmailSchedulingModule,
     ChatModule,
+    PubSubModule,
   ],
   controllers: [],
   providers: [
