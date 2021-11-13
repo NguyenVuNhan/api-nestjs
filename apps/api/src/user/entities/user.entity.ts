@@ -47,6 +47,12 @@ export class User {
   @Column({ nullable: true })
   @Exclude()
   public currentHashedRefreshToken?: string;
+
+  @Column({ default: false })
+  public isTwoFactorAuthenticationEnabled: boolean;
+
+  @Column({ nullable: true })
+  public twoFactorAuthenticationSecret?: string;
 }
 
 export default User;

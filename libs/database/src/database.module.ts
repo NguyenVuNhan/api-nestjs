@@ -17,7 +17,6 @@ import { join } from 'path';
         database: configService.get('POSTGRES_DB'),
         entities: [join(__dirname, '../../../**', '*.entity.{ts,js}')],
         synchronize: configService.get('NODE_ENV') === 'development',
-        logging: true,
       }),
     }),
   ],

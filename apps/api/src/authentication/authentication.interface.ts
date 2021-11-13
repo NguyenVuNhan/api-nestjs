@@ -7,4 +7,5 @@ export interface RequestWithUser extends Request {
 
 export interface TokenPayload {
   userId: number;
+  isSecondFactorAuthenticated?: boolean;
 }

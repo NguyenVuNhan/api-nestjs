@@ -15,12 +15,12 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { GET_POSTS_CACHE_KEY } from './post.constant';
 import { RequestWithUser } from '../authentication/authentication.interface';
-import JwtAuthenticationGuard from '../authentication/guard/jwtAuthentication.guard';
+import JwtTwoFactorGuard from '../authentication/guard/jwt-two-factor.guard';
 import PaginationParams from '../utils/dto/paginationParams.dto';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { GET_POSTS_CACHE_KEY } from './post.constant';
 import { PostService } from './post.service';
 
 @Controller('post')
@@ -28,7 +28,7 @@ export class PostController {
   constructor(private readonly postService: PostService) {}
 
   @Post()
-  @UseGuards(JwtAuthenticationGuard)
+  @UseGuards(JwtTwoFactorGuard)
   create(@Body() post: CreatePostDto, @Req() req: RequestWithUser) {
     return this.postService.create(post, req.user);
   }

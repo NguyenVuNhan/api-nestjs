@@ -44,6 +44,7 @@ import { Timestamp } from './utils/scalars/timestamp.scalar';
           .valid('development', 'production', 'test')
           .default('development'),
         GRAPHQL_PLAYGROUND: Joi.number(),
+        TWO_FACTOR_AUTHENTICATION_APP_NAME: Joi.string(),
         // JWT
         JWT_SECRET: Joi.string().required(),
         JWT_EXPIRATION_TIME: Joi.string().required(),
