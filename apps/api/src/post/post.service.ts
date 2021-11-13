@@ -35,7 +35,18 @@ export class PostService {
     });
   }
 
-  async findAll(offset?: number, limit?: number, startId?: number) {
+  async getPostsWithAuthors(offset?: number, limit?: number, startId?: number) {
+    return this.getPosts(offset, limit, startId, {
+      relations: ['author'],
+    });
+  }
+
+  async getPosts(
+    offset?: number,
+    limit?: number,
+    startId?: number,
+    options?: FindManyOptions<Post>,
+  ) {
     const where: FindManyOptions<Post>['where'] = {};
     let separateCount = 0;
     if (startId) {
@@ -44,13 +55,12 @@ export class PostService {
     }
 
     const [items, count] = await this.postRepository.findAndCount({
-      where,
-      relations: ['author'],
       order: {
         id: 'ASC',
       },
       skip: offset,
       take: limit,
+      ...options,
     });
 
     return {

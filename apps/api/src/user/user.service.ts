@@ -9,8 +9,8 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
+import { Connection, In, Repository } from 'typeorm';
 import { FilesService } from '../files/files.service';
-import { Connection, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import User from './entities/user.entity';
 
@@ -26,6 +26,12 @@ export class UserService {
     const newUser = await this.userRepository.create(user);
     await this.userRepository.save(user);
     return newUser;
+  }
+
+  async getByIds(ids: number[]) {
+    return this.userRepository.find({
+      where: { id: In(ids) },
+    });
   }
 
   async getById(id: number) {

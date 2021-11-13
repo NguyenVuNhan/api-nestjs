@@ -1,13 +1,14 @@
-import * as redisStore from 'cache-manager-redis-store';
 import { CacheModule, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import * as redisStore from 'cache-manager-redis-store';
 import { SearchModule } from '../search/search.module';
+import { UserModule } from '../user/user.module';
 import Post from './entities/post.entity';
 import { PostSearchService } from './post-search.service';
 import { PostController } from './post.controller';
-import { PostService } from './post.service';
 import { PostResolver } from './post.resolver';
+import { PostService } from './post.service';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { PostResolver } from './post.resolver';
     }),
     TypeOrmModule.forFeature([Post]),
     SearchModule,
+    UserModule,
   ],
   controllers: [PostController],
   providers: [PostService, PostSearchService, PostResolver],

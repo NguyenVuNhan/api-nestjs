@@ -15,8 +15,7 @@ import Address from './address.entity';
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
-  @Exclude()
-  public id?: number;
+  public id: number;
 
   @OneToOne(() => PublicFile, { eager: true, nullable: true })
   @JoinColumn()

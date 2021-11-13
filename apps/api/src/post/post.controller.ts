@@ -44,7 +44,7 @@ export class PostController {
     if (search) {
       return this.postService.searchForPosts(search, offset, limit);
     }
-    return this.postService.findAll(offset, limit, startId);
+    return this.postService.getPosts(offset, limit, startId);
   }
 
   @Get(':id')

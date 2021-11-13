@@ -1,5 +1,18 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  Context,
+  Info,
+  Mutation,
+  Query,
+  Resolver,
+} from '@nestjs/graphql';
+import { GraphQLResolveInfo } from 'graphql';
+import {
+  parseResolveInfo,
+  ResolveTree,
+  simplifyParsedResolveInfoFragmentWithType,
+} from 'graphql-parse-resolve-info';
 import { RequestWithUser } from '../authentication/authentication.interface';
 import { GraphqlJwtAuthGuard } from '../authentication/guard/graphql-jwt-auth.guard';
 import { CreatePostInput } from './inputs/post.input';
@@ -8,13 +21,32 @@ import { PostService } from './post.service';
 
 @Resolver(() => Post)
 export class PostResolver {
-  constructor(private postService: PostService) {}
+  constructor(private readonly postService: PostService) {}
 
   @Query(() => [Post])
-  async posts() {
-    const posts = await this.postService.findAll();
+  async posts(@Info() info: GraphQLResolveInfo) {
+    const parsedInfo = parseResolveInfo(info) as ResolveTree;
+    const simplifiedInfo = simplifyParsedResolveInfoFragmentWithType(
+      parsedInfo,
+      info.returnType,
+    );
+
+    const posts =
+      'author' in simplifiedInfo.fields
+        ? await this.postService.getPostsWithAuthors()
+        : await this.postService.getPosts();
+
     return posts.items;
   }
+
+  // Instead of Joining query to show the authors, we can add a resolver
+  // and usin  DataLoader to avoid N+1 problem
+  // @ResolveField('author', () => User)
+  // async getAuthor(@Parent() post: Post) {
+  //   const { authorId } = post;
+
+  //   return this.postLoader.batchAuthors.load(authorId);
+  // }
 
   @Mutation(() => Post)
   @UseGuards(GraphqlJwtAuthGuard)

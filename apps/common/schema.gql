@@ -2,10 +2,17 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type User {
+  id: Int!
+  email: String!
+}
+
 type Post {
   id: Int!
   title: String!
   paragraphs: [String!]!
+  authorId: Int!
+  author: User!
 }
 
 type Query {
