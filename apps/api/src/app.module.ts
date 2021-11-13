@@ -16,9 +16,10 @@ import { ExceptionsLoggerFilter } from './exceptionsLogger.filter';
 import { PostModule } from './post/post.module';
 import { ProductCategoriesModule } from './product-categories/product-categories.module';
 import { ProductsModule } from './products/products.module';
+import { PubSubModule } from './pub-sub/pub-sub.module';
 import { SubscribersModule } from './subscribers/subscribers.module';
 import { UserModule } from './user/user.module';
-import { PubSubModule } from './pub-sub/pub-sub.module';
+import { Timestamp } from './utils/scalars/timestamp.scalar';
 
 @Module({
   imports: [
@@ -30,6 +31,9 @@ import { PubSubModule } from './pub-sub/pub-sub.module';
         playground: Boolean(configService.get('GRAPHQL_PLAYGROUND')),
         autoSchemaFile: join(process.cwd(), 'apps/common/schema.gql'),
         installSubscriptionHandlers: true,
+        buildSchemaOptions: {
+          dateScalarMode: 'timestamp',
+        },
       }),
     }),
     ConfigModule.forRoot({
@@ -101,6 +105,7 @@ import { PubSubModule } from './pub-sub/pub-sub.module';
       provide: APP_FILTER,
       useClass: ExceptionsLoggerFilter,
     },
+    Timestamp,
   ],
 })
 export class AppModule {}
