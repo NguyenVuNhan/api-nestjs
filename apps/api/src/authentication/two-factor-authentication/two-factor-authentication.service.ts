@@ -26,6 +26,7 @@ export class TwoFactorAuthenticationService {
   public async generateTwoFactorAuthenticationSecret(user: User) {
     const secret = authenticator.generateSecret();
 
+    authenticator.options = { window: 1 };
     const otpauthUrl = authenticator.keyuri(
       user.email,
       this.configService.get('TWO_FACTOR_AUTHENTICATION_APP_NAME'),
